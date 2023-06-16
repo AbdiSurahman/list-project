@@ -1,9 +1,4 @@
 @extends('layouts.master')
-@section('pageTitle', $pageTitle)
-
-@section('main')
-
-@extends('layouts.master')
 
 @section('main')
   <div class="task-list-container">
@@ -41,6 +36,9 @@
               Not Started
           @endswitch
         </div>
+        <div>
+            <a href="{{ route('tasks.edit', ['id' => $task->id]) }}">Edit</a>
+          </div>
         </div>
     @endforeach
   </div>
