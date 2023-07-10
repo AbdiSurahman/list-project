@@ -43,7 +43,7 @@ class TaskController extends Controller
             ],
             $request->all()
         );
-        
+
         Task::create([
             'name' => $request->name,
             'detail' => $request->detail,
@@ -51,15 +51,38 @@ class TaskController extends Controller
             'status' => $request->status,
         ]);
 
-        return redirect()->route('tasks.index');
+        return redirect()->route('tasks.index')->with('success', 'data berhasil ditambah');
     }
 
     public function edit($id)
     {
         $pageTitle = 'Edit Task';
         $task = Task::find($id);
-        // $task = $tasks[$id - 1];
         return view('tasks.edit', ['pageTitle' => $pageTitle, 'task' => $task]);
     } 
+
+    public function update(Request $request, $id)
+    {
+        $task = Task::find($id);
+
+        $request->validate(
+            [
+                'name' => 'required',
+                'due_date' => 'required',
+                'status' => 'required',
+            ],
+            $request->all()
+        );
+
+            $task->update([
+                'name' => $request->name,
+                'detail' => $request->detail,
+                'due_date' => $request->due_date,
+                'status' => $request->status,
+            ]);
+
+       
+        return redirect()->route('tasks.index')->with('success edit data');
+    }
 }
 
