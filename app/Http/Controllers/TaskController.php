@@ -17,11 +17,11 @@ class TaskController extends Controller
     public function index()
     {
         $pageTitle = 'Task List'; // Ditambahkan
-    $tasks = Task::all();
-    return view('tasks.index', [
-        'pageTitle' => $pageTitle, //Ditambahkan
-        'tasks' => $tasks,
-    ]);
+        $tasks = Task::all();
+        return view('tasks.index', [
+            'pageTitle' => $pageTitle, //Ditambahkan
+            'tasks' => $tasks,
+        ]);
     }
 
     public function create()
@@ -99,5 +99,34 @@ class TaskController extends Controller
 
         return redirect()->route('tasks.index')->with('success delete data');
     }
+
+    public function progress()
+{
+    $title = 'Task Progress';
+
+    $tasks = Task::all();
+
+    $filteredTasks = $tasks->groupBy('status');
+
+    $tasks = [
+        Task::STATUS_NOT_STARTED => $filteredTasks->get(
+            Task::STATUS_NOT_STARTED, []
+        ),
+        Task::STATUS_IN_PROGRESS => $filteredTasks->get(
+            Task::STATUS_IN_PROGRESS, []
+        ),
+        Task::STATUS_IN_REVIEW => $filteredTasks->get(
+            Task::STATUS_IN_REVIEW, []
+        ),
+        Task::STATUS_COMPLETED => $filteredTasks->get(
+            Task::STATUS_COMPLETED, []
+        ),
+    ];
+
+    return view('tasks.progress', [
+        'pageTitle' => $title,
+        'tasks' => $tasks,
+    ]);
+}
 }
 

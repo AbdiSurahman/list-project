@@ -12,8 +12,8 @@
 
 <body>
     <div class="container">
-        @include('partials.sidebar') 
         <div class="main">
+          @include('partials.sidebar') 
           @yield('main')
         </div>
       </div>
