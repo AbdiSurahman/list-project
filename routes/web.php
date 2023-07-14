@@ -17,7 +17,7 @@ use App\Http\Controllers\TaskController;
 
 Route::get('/', function () {
     return view('homepage.index');
-})->name('homepage.index');
+})->name('homepage.index')->middleware('auth');
 
 Route::name('auth.')
     ->controller(AuthController::class)
@@ -31,6 +31,7 @@ Route::name('auth.')
 
 Route::prefix('tasks')
     ->name('tasks.')
+    ->middleware('auth')
     ->controller(TaskController::class)
     ->group(function () {
         Route::get('/', 'index')->name('index');
