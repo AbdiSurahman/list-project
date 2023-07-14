@@ -45,4 +45,3 @@ Route::prefix('tasks')
         Route::patch('{id}/move', 'move')->name('move');
     });
 
-   
