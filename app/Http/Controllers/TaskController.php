@@ -6,6 +6,7 @@ use App\Models\Task;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 
 class TaskController extends Controller
 {
@@ -54,6 +55,7 @@ class TaskController extends Controller
 
     public function store(Request $request)
     {
+        
         $request->validate(
             [
                 'name' => 'required',
@@ -77,14 +79,16 @@ class TaskController extends Controller
     public function edit($id)
     {
         $pageTitle = 'Edit Task';
-        $task = Task::find($id);
-        return view('tasks.edit', ['pageTitle' => $pageTitle, 'task' => $task]);
+        $task = Task::findOrFail($id);
+
+        Gate::authorize('update', $task);
+
+        return view('tasks.edit', ['pageTitle' => $pageTitle, 'task' => $task,
+    ]);
     } 
 
     public function update(Request $request, $id)
     {
-        $task = Task::find($id);
-
         $request->validate(
             [
                 'name' => 'required',
@@ -94,29 +98,35 @@ class TaskController extends Controller
             $request->all()
         );
 
+        $task = Task::findOrFail($id);
+        Gate::authorize('update', $task);
+
             $task->update([
                 'name' => $request->name,
                 'detail' => $request->detail,
                 'due_date' => $request->due_date,
                 'status' => $request->status,
             ]);
-
-       
+  
         return redirect()->route('tasks.index')->with('success edit data');
     }
 
     public function delete($id) 
     {
-        $pageTitle = 'Delete Task';
-        $task = Task::find($id);
-        return view('tasks.delete', ['pageTitle' => $pageTitle, 'task' => $task]);
+        $title = 'Delete Task';
+        $task = Task::findOrFail($id);
+
+        Gate::authorize('delete', $task);
+
+        return view('tasks.delete', ['pageTitle' => $title, 'task' => $task]);
     }
 
     public function destroy($id) 
     {
-        $task = Task::find($id);
+        $task = Task::findOrFail($id);
+        Gate::authorize('delete', $task);
+        
         $task->delete();
-
         return redirect()->route('tasks.index')->with('success delete data');
     }
 
@@ -125,6 +135,8 @@ class TaskController extends Controller
     $title = 'Task Progress';
 
     $tasks = Task::all();
+
+    // Gate::authorize('progress', $tasks);
 
     $filteredTasks = $tasks->groupBy('status');
 
@@ -152,6 +164,7 @@ class TaskController extends Controller
 public function move(int $id, Request $request) 
 {
     $task = Task::findOrFail($id);
+    Gate::authorize('move', $task);
 
     $task->update([
         'status' => $request->status,
