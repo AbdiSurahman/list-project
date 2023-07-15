@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Task;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Auth;
 
 class TaskController extends Controller
 {
@@ -12,6 +13,24 @@ class TaskController extends Controller
 
     public function __construct()
     {
+    }
+
+    public function homepage()
+    {
+        $tasks = Task::where('user_id', auth()->id())->get();
+
+        $completed_count = $tasks
+            ->where('status', Task::STATUS_COMPLETED)
+            ->count();
+
+        $uncompleted_count = $tasks
+            ->whereNotIn('status', Task::STATUS_COMPLETED)
+            ->count();
+
+        return view('homepage.index', [
+            'completed_count' => $completed_count,
+            'uncompleted_count' => $uncompleted_count,
+        ]);
     }
 
     public function index()
@@ -49,6 +68,7 @@ class TaskController extends Controller
             'detail' => $request->detail,
             'due_date' => $request->due_date,
             'status' => $request->status,
+            'user_id' => Auth::user()->id,
         ]);
 
         return redirect()->route('tasks.index')->with('success', 'data berhasil ditambah');

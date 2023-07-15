@@ -12,13 +12,13 @@
         <h1 class="task-summary-greeting">Hi, Guest!</h1>
         @endif
        <h1 class="task-summary-heading">Summary of Your Tasks</h1>
-      <div  class="task-summary-list">
+       <div  class="task-summary-list">
         <span class="material-icons">check_circle</span>
-        <h2>You have completed 1 task</h2>
+        <h2>You have completed {{ $completed_count }} task</h2>
       </div>
       <div class="task-summary-list">
         <span class="material-icons">list</span>
-        <h2>You still have 5 tasks left</h2>
+        <h2>You still have {{ $uncompleted_count }} tasks left</h2>
       </div>
     </div>
   </div>
